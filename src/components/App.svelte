@@ -1,14 +1,22 @@
 <style>
   /* vars defined in public/assets/global.css */
   h1 {
-    font-size: 4rem;
+    font-size: 42px;
     text-align: center;
+    margin: 2rem auto;
+    max-width: 30rem;
   }
   figure {
     display: block;
     max-width: 30rem;
     margin: 0 auto;
     position: relative;
+  }
+  figure.right {
+    outline: 8px solid lime;
+  }
+  figure.wrong {
+    outline: 8px solid red;
   }
   img {
     position: absolute;
@@ -22,19 +30,28 @@
   img.visible {
     opacity: 1;
   }
-  .choice {
+  .choice,
+  .next {
     text-align: center;
     display: flex;
     justify-content: space-between;
     max-width: 30rem;
-    margin: 1rem auto;
+    margin: 2rem auto;
+    opacity: 0;
+    transition: opacity 0.25s 0.75s;
+  }
+  .choice.visible,
+  .next.visible {
+    opacity: 1;
   }
   button {
     flex: 1 0 auto;
     font-size: 24px;
     padding: 1rem;
     cursor: pointer;
-    font-family: "Times New Roman", Times, serif;
+    /* font-family: "Times New Roman", Times, serif; */
+    text-transform: uppercase;
+    font-weight: bold;
   }
   button:first-of-type {
     margin-right: 0.5rem;
@@ -43,7 +60,7 @@
     margin-left: 0.5rem;
   }
   button:hover {
-    background-color: pink;
+    background-color: lightgray;
   }
 </style>
 
@@ -53,10 +70,17 @@
 
   let mode = "question";
   let w = 0;
+  let index = 0;
+  let result;
+
+  const data = ["toe"];
 
   $: h = w;
 
+  function next() {}
   function submit() {
+    const a = this.innerText.toLowerCase();
+    result = a === data[index];
     mode = "answer";
   }
 
@@ -80,9 +104,13 @@
   }
 </script>
 
-<h1>Toe or Thumb?</h1>
+<h1>Is this a toe or thumb?</h1>
 
-<figure style="height: {h}px;" bind:offsetWidth="{w}">
+<figure
+  class:right="{result === true}"
+  class:wrong="{result === false}"
+  style="height: {h}px;"
+  bind:offsetWidth="{w}">
   <img
     class="visible"
     alt="image of toe or thumb?"
@@ -93,7 +121,13 @@
     src="assets/0-answer.png" />
 </figure>
 
-<div class="choice">
-  <button on:click="{submit}">Toe</button>
-  <button on:click="{submit}">Thumb</button>
+<div class="choice visible">
+  <button disabled="{mode === 'answer'}" on:click="{submit}">Toe 🦶</button>
+  <button disabled="{mode === 'answer'}" on:click="{submit}">Thumb ✋</button>
+</div>
+
+<div class:visible="{mode === 'answer'}" class="next">
+  <button disabled="{mode === 'question'}" on:click="{next}">
+    Next Appendage
+  </button>
 </div>
