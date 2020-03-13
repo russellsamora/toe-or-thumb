@@ -50,7 +50,6 @@
 <script>
   // import Child from "./Child.svelte";
   const url = "https://toe-or-thumb-db.herokuapp.com/answers";
-  const request = new XMLHttpRequest();
 
   let mode = "question";
   let w = 0;
@@ -62,6 +61,7 @@
   }
 
   function post() {
+    const request = new XMLHttpRequest();
     request.open("POST", url, true);
     request.setRequestHeader(
       "Content-Type",
