@@ -1,3 +1,7 @@
+:root {
+  --w: 25rem;
+}
+
 main {
   padding: 0 1rem;
   font-family: sans-serif;
