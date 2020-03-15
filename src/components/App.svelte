@@ -9,15 +9,11 @@
   figure {
     display: block;
     max-width: var(--w);
+    min-height: 280px;
     margin: 0 auto;
     position: relative;
   }
-  figure.right {
-    /* outline: 8px solid lime; */
-  }
-  figure.wrong {
-    /* outline: 8px solid red; */
-  }
+
   figure:before {
     position: absolute;
     display: block;
@@ -190,18 +186,18 @@
   <button disabled="{mode === 'answer'}" on:click="{submit}">Thumb</button>
 </div>
 
-<div class:visible="{mode === 'answer'}" class="next">
+<div class:visible="{mode === 'answer' && agg.length}" class="next">
   <p>
     <span>{percent}</span>
     of people got it... {numR} right, {numW} wrong.
   </p>
-  <p>Check back next week for round {index + 2}!</p>
   <!-- <button disabled="{mode === 'question'}" on:click="{next}">
     Next Appendage
   </button> -->
 </div>
 
 <div class="credit">
+  <p>Check back next week for round {index + 2}!</p>
   <p>
     Made by
     <a href="https://twitter.com/codeberg" target="_blank">@codenberg</a>
