@@ -1,23 +1,39 @@
 <style>
   /* vars defined in public/assets/global.css */
   h1 {
-    font-size: 42px;
+    font-size: 40px;
     text-align: center;
     margin: 2rem auto;
-    max-width: 30rem;
+    max-width: var(--w);
   }
   figure {
     display: block;
-    max-width: 30rem;
+    max-width: var(--w);
     margin: 0 auto;
     position: relative;
   }
   figure.right {
-    outline: 8px solid lime;
+    /* outline: 8px solid lime; */
   }
   figure.wrong {
-    outline: 8px solid red;
+    /* outline: 8px solid red; */
   }
+  figure:before {
+    position: absolute;
+    display: block;
+    top: 1rem;
+    right: 1rem;
+    font-size: 48px;
+    z-index: 1;
+    line-height: 1;
+  }
+  figure.right:before {
+    content: "✅";
+  }
+  figure.wrong:before {
+    content: "🚫";
+  }
+
   img {
     position: absolute;
     top: 0;
@@ -25,23 +41,20 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-    /* transition: opacity 250ms; */
   }
   img.visible {
     opacity: 1;
   }
-  .choice,
-  .next {
+  .choice {
     text-align: center;
     display: flex;
     justify-content: space-between;
-    max-width: 30rem;
+    max-width: var(--w);
     margin: 2rem auto;
     opacity: 0;
     transition: opacity 0.25s 0.75s;
   }
-  .choice.visible,
-  .next.visible {
+  .choice.visible {
     opacity: 1;
   }
   button {
@@ -49,7 +62,6 @@
     font-size: 24px;
     padding: 1rem;
     cursor: pointer;
-    /* font-family: "Times New Roman", Times, serif; */
     text-transform: uppercase;
     font-weight: bold;
   }
@@ -62,49 +74,101 @@
   button:hover {
     background-color: lightgray;
   }
+  .next {
+    max-width: var(--w);
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.4;
+    visibility: hidden;
+  }
+  .next.visible {
+    visibility: visible;
+  }
+  .credit {
+    max-width: var(--w);
+    margin: 0 auto;
+    font-size: 18px;
+    line-height: 1.4;
+  }
 </style>
 
 <script>
-  // import Child from "./Child.svelte";
-  const url = "https://toe-or-thumb-db.herokuapp.com/answers";
+  import { onMount } from "svelte";
+  const data = ["thumb"];
 
   let mode = "question";
   let w = 0;
   let index = 0;
-  let result;
-
-  const data = ["toe"];
+  let user = [];
+  let agg = [];
 
   $: h = w;
+  $: result = user[index] ? user[index] === data[index] : null;
+  $: currentAgg = agg.length ? agg.find(d => d.key === `${index}`) : null;
+  $: numR = currentAgg ? currentAgg.value.r : 0;
+  $: numW = currentAgg ? currentAgg.value.w : 0;
+  $: percent = currentAgg
+    ? `${Math.round((numR / (numR + numW)) * 100)}%`
+    : "0%";
 
-  function next() {}
-  function submit() {
-    const a = this.innerText.toLowerCase();
-    result = a === data[index];
-    mode = "answer";
-  }
-
-  function post() {
+  function getAggregate() {
     const request = new XMLHttpRequest();
-    request.open("POST", url, true);
-    request.setRequestHeader(
-      "Content-Type",
-      "application/x-www-form-urlencoded; charset=UTF-8"
-    );
+    const version = Date.now();
+    const url = `https://pudding.cool/misc/toe-or-thumb/data.json?version=${version}`;
+    request.open("GET", url, true);
 
     request.onload = function() {
       if (this.status >= 200 && this.status < 400) {
+        const raw = JSON.parse(this.response);
+        agg = raw.answers;
       } else {
+        console.log("error1");
       }
     };
 
-    request.onerror = function() {};
+    request.onerror = function() {
+      console.log("error2");
+    };
 
-    request.send({ question: 0, answer: false });
+    request.send();
+  }
+
+  onMount(() => {
+    // localStorage.removeItem("toe-or-thumb");
+    const str = localStorage.getItem("toe-or-thumb");
+    if (str) {
+      user = JSON.parse(str);
+      mode = "answer";
+    }
+    getAggregate();
+  });
+
+  function submit() {
+    const a = this.innerText.toLowerCase();
+    user[index] = a;
+    user = user;
+    mode = "answer";
+
+    localStorage.setItem("toe-or-thumb", JSON.stringify(user));
+    saveToDB({ question: index, answer: a === data[index] });
+  }
+
+  function saveToDB(result) {
+    const request = new XMLHttpRequest();
+    const url = "https://toe-or-thumb-db.herokuapp.com/answers";
+    request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.onload = function() {
+      console.log(this.status);
+    };
+    request.onerror = function(err) {
+      console.log(err);
+    };
+    request.send(JSON.stringify(result));
   }
 </script>
 
-<h1>Is this a toe or thumb?</h1>
+<h1>Toe or Thumb?</h1>
 
 <figure
   class:right="{result === true}"
@@ -122,12 +186,25 @@
 </figure>
 
 <div class="choice visible">
-  <button disabled="{mode === 'answer'}" on:click="{submit}">Toe 🦶</button>
-  <button disabled="{mode === 'answer'}" on:click="{submit}">Thumb ✋</button>
+  <button disabled="{mode === 'answer'}" on:click="{submit}">Toe</button>
+  <button disabled="{mode === 'answer'}" on:click="{submit}">Thumb</button>
 </div>
 
 <div class:visible="{mode === 'answer'}" class="next">
-  <button disabled="{mode === 'question'}" on:click="{next}">
+  <p>
+    <span>{percent}</span>
+    of people got it... {numR} right, {numW} wrong.
+  </p>
+  <p>Check back next week for round {index + 2}!</p>
+  <!-- <button disabled="{mode === 'question'}" on:click="{next}">
     Next Appendage
-  </button>
+  </button> -->
+</div>
+
+<div class="credit">
+  <p>
+    Made by
+    <a href="https://twitter.com/codeberg" target="_blank">@codenberg</a>
+
+  </p>
 </div>
