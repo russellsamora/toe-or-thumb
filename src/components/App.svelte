@@ -2,6 +2,7 @@
   /* vars defined in public/assets/global.css */
   h1 {
     font-size: 40px;
+    font-weight: 400;
     text-align: center;
     margin: 2rem auto;
     max-width: var(--w);
