@@ -194,7 +194,7 @@
 <div class:visible="{mode === 'answer' && agg.length}" class="next">
   <p>
     <span>{percent}</span>
-    of people got it! {numR} ✅, {numW} 🚫.
+    of people got it! {numR} ✅ and {numW} 🚫.
   </p>
 </div>
 
