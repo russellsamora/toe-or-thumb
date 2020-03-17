@@ -74,7 +74,6 @@
   .next {
     max-width: var(--w);
     margin: 0 auto;
-    font-size: 18px;
     line-height: 1.4;
     visibility: hidden;
   }
@@ -84,7 +83,6 @@
   .credit {
     max-width: var(--w);
     margin: 0 auto;
-    font-size: 18px;
     line-height: 1.4;
   }
 </style>
