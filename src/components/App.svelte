@@ -194,11 +194,8 @@
 <div class:visible="{mode === 'answer' && agg.length}" class="next">
   <p>
     <span>{percent}</span>
-    of people got it! ✅:{numR} 🚫: {numW}
+    of people got it! {numR} ✅, {numW} 🚫.
   </p>
-  <!-- <button disabled="{mode === 'question'}" on:click="{next}">
-    Next Appendage
-  </button> -->
 </div>
 
 <div class="credit">
