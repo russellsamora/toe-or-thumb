@@ -1,10 +1,13 @@
 :root {
-  --w: 25rem;
+  --w: 22rem;
+  --w2: 25rem;
 }
 
 main {
   padding: 0 1rem;
   font-family: sans-serif;
+  margin: 0 auto;
+  max-width: var(--w);
 }
 
 p {
@@ -14,5 +17,8 @@ p {
 @media only screen and (min-width: 480px) {
   p {
     font-size: 18px;
+  }
+  main {
+    max-width: var(--w2);
   }
 }

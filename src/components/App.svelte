@@ -5,11 +5,11 @@
     font-weight: 400;
     text-align: center;
     margin: 2rem auto;
-    max-width: var(--w);
+    /* max-width: var(--w); */
   }
   figure {
     display: block;
-    max-width: var(--w);
+    /* max-width: var(--w); */
     min-height: 280px;
     margin: 0 auto;
     position: relative;
@@ -46,7 +46,7 @@
     text-align: center;
     display: flex;
     justify-content: space-between;
-    max-width: var(--w);
+    /* max-width: var(--w); */
     margin: 2rem auto;
     opacity: 0;
     transition: opacity 0.25s 0.75s;
@@ -56,8 +56,8 @@
   }
   button {
     flex: 1 0 auto;
-    font-size: 24px;
-    padding: 1rem;
+    font-size: 20px;
+    padding: 0.5rem;
     cursor: pointer;
     text-transform: uppercase;
     font-weight: bold;
@@ -72,7 +72,7 @@
     background-color: lightgray;
   }
   .next {
-    max-width: var(--w);
+    /* max-width: var(--w); */
     margin: 0 auto;
     line-height: 1.4;
     visibility: hidden;
@@ -81,9 +81,15 @@
     visibility: visible;
   }
   .credit {
-    max-width: var(--w);
+    /* max-width: var(--w); */
     margin: 0 auto;
     line-height: 1.4;
+  }
+  @media only screen and (min-width: 480px) {
+    button {
+      padding: 1rem;
+      font-size: 24px;
+    }
   }
 </style>
 
