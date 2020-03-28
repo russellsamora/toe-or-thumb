@@ -199,7 +199,7 @@
 </div>
 
 <div class="credit">
-  <p>Check back next week for round {index + 2}!</p>
+  <!-- <p>Check back next week for round {index + 2}!</p> -->
   <p>
     Made by
     <a href="https://twitter.com/codeberg" target="_blank">@codenberg</a>
